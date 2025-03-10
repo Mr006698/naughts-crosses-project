@@ -13,6 +13,12 @@ class Player(Enum):
   TWO = 2
 
 
+class WinState(Enum):
+  NONE = 0
+  WIN = 1
+  DRAW = 2
+
+
 class Grid:
   def __init__(self, rows: int, cols: int):
     # Create the grid
@@ -24,7 +30,7 @@ class Grid:
     self._create_grid_ref()
 
 
-  def add_player(self, player: Player, pos:str, win_line: int = 3) -> bool:
+  def add_player(self, player: Player, pos:str, win_line: int = 3) -> WinState:
     # TODO: if out of bounds or place taken throw exception
     coords = self._grid_ref.get(pos)
     row, col = coords
@@ -56,11 +62,26 @@ class Grid:
         self._grid[row][col] = Player.NONE
 
   
-  def _check_win(self, player: Player, start: tuple, win_line: int) -> bool:
-    
-    return (self._check_horizontal(player, start, win_line) or
+  def _check_win(self, player: Player, start: tuple, win_line: int) -> WinState:
+    if (self._check_horizontal(player, start, win_line) or
             self._check_vertical(player, start, win_line) or
-            self._check_diagonal(player, start, win_line))
+            self._check_diagonal(player, start, win_line)):
+      return WinState.WIN
+    
+    # if no winners check for empty cells
+    if self._check_draw():
+      return WinState.DRAW
+    
+    return WinState.NONE
+  
+
+  def _check_draw(self) -> bool:
+    # If there are empty cells then it is not a draw
+    for row in self._grid:
+      if Player.NONE in row:
+        return False
+      
+    return True
   
 
   def _check_horizontal(self, player: Player, start: tuple, win_line: int) -> bool:

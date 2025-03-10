@@ -23,6 +23,13 @@ class ANSI(StrEnum):
   STYLE = '\033[0m'
 
 
+title = ['╔════╗   ', '╔════╗     ', '╔════╗',
+         '║╔╗╔╗║   ', '║╔╗╔╗║     ', '║╔╗╔╗║',
+         '╚╝║║╠╬══╗', '╚╝║║╠╩═╦══╗', '╚╝║║╠╩═╦══╗',
+         '  ║║╠╣╔═╝  ', '║║║╔╗║╔═╝  ', '║║║╔╗║║═╣',
+         '  ║║║║╚═╗  ', '║║║╔╗║╚═╗  ', '║║║╚╝║║═╣',
+         '  ╚╝╚╩══╝  ', '╚╝╚╝╚╩══╝  ', '╚╝╚══╩══╝']
+
 class TextGUI:
   def __init__(self, grid: Grid):
     self._grid = grid
@@ -40,13 +47,21 @@ class TextGUI:
       
       if self._grid.is_valid_move(res):
         return res
-        
       else:
         print(f'{ANSI.RED}INVALID MOVE{ANSI.STYLE} Please Try Again Using Grid Coodinates e.g A0 or B1 on an empty cell.')
 
 
   def draw(self) -> None:
-    print(f'{ANSI.YELLOW}NOUGHTS AND CROSSES{ANSI.STYLE}')
+    for idx in range(len(title)):
+      col_idx = idx % 3
+      match col_idx:
+        case 0:
+          print(f'{ANSI.GREEN}{title[idx]}{ANSI.STYLE}', end='')
+        case 1:
+          print(f'{ANSI.WHITE}{title[idx]}{ANSI.STYLE}', end='')
+        case 2:
+          print(f'{ANSI.BLUE}{title[idx]}{ANSI.STYLE}', end='\r\n')
+
     placed_players = [[self._players[col.value] for col in row] for row in self._grid]
     print(tabulate(placed_players,
                    headers=self._col_index,
@@ -58,6 +73,14 @@ class TextGUI:
   def print_player_wins(self, player: Player) -> bool:
     colour = ANSI.GREEN if player == Player.ONE else ANSI.BLUE
     res = input(f'{colour}PLAYER {player.name}{ANSI.STYLE} Wins! Type Y to Play Again: ').strip().upper()
+    if res == 'Y':
+      return True
+    
+    return False
+  
+
+  def print_players_draw(self) -> bool:
+    res = input(f'{ANSI.GREEN}PLAYER ONE{ANSI.STYLE} and {ANSI.BLUE}PLAYER TWO{ANSI.STYLE} Draw! Type Y to Play Again: ').strip().upper()
     if res == 'Y':
       return True
     
