@@ -31,12 +31,18 @@ class Grid:
 
 
   def add_player(self, player: Player, pos:str, win_line: int = 3) -> WinState:
-    # TODO: if out of bounds or place taken throw exception
     coords = self._grid_ref.get(pos)
-    row, col = coords
+    # TODO: If coords add player
+    # If not coords throw exception
+
+    return self.add_player_at_loc(player, coords, win_line)
+  
+
+  def add_player_at_loc(self, player: Player, loc, win_line: int) -> WinState:
+    row, col = loc
     self._grid[row][col] = player
 
-    return self._check_win(player, coords, win_line)
+    return self._check_win(player, loc, win_line)
   
 
   def is_valid_move(self, pos:str) -> bool:

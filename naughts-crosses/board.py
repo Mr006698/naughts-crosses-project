@@ -7,7 +7,7 @@ class Board:
     self._text_gui = TextGUI(self._grid)
     self._current_player = Player.ONE
 
-
+  # Text GUI
   def run(self) -> None:
     # Draw grid on startup
     self._text_gui.clear_console()
